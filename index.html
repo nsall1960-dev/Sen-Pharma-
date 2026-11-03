@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sen Pharma Connect - La pharmacie connectée, la santé simplifiée</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- ==================== BARRE DE NAVIGATION COMMUNE ==================== -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-sen">SEN</span><span class="logo-pharma">PHARMA</span>
+            </div>
+            
+            <div class="nav-actions">
+                <span id="user-welcome-msg" style="font-size: 14px; font-weight: 600; color: var(--secondary);"></span>
+                <button class="btn-outline" id="auth-nav-btn" onclick="openModal('auth-modal')">
+                    <i class="fa-solid fa-user"></i> Mon Compte / Connexion
+                </button>
+                <button class="btn-secondary" id="logout-btn" onclick="logout()" style="display: none;">
+                    <i class="fa-solid fa-right-from-bracket"></i> Déconnexion
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== PAGE D'ACCUEIL PUBLIQUE (AVANT CONNEXION) ==================== -->
+    <div id="public-view" class="view-container">
+        <section class="hero-section">
+            <div class="hero-content">
+                <span class="hero-tag"><i class="fa-solid fa-shield-heart"></i> La pharmacie connectée, la santé simplifiée</span>
+                <h1>Vos médicaments à portée de clic</h1>
+                <p>Connectez-vous pour accéder à votre espace personnalisé (Client ou Vendeur/Pharmacie).</p>
+                <button class="btn-primary" onclick="openModal('auth-modal')">Se connecter / Créer un compte <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=600&q=80" alt="Pharmacie numérique">
+            </div>
+        </section>
+    </div>
+
+    <!-- ==================== INTERFACE CLIENT ==================== -->
+    <div id="client-view" class="view-container" style="display: none;">
+        <div class="dashboard-header">
+            <h2><i class="fa-solid fa-user-check"></i> Espace Client / Patient</h2>
+            <button class="icon-btn-cart" onclick="toggleCart()">
+                <i class="fa-solid fa-cart-shopping"></i> Mon Panier <span class="badge" id="cart-badge">0</span>
+            </button>
+        </div>
+
+        <!-- Section de Recherche de Médicament Active -->
+        <section class="search-section-client">
+            <div class="search-container-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="client-search-input" placeholder="Rechercher un médicament dans le catalogue (ex: Doliprane, Amoxicilline)..." onkeyup="filterProducts()">
+            </div>
+        </section>
+
+        <!-- Catalogue des produits -->
+        <section class="main-section">
+            <div class="section-header">
+                <h2>Catalogue des Médicaments Disponibles</h2>
+            </div>
+            <div class="products-grid" id="products-grid-container">
+                <div class="product-card" data-name="doliprane 1000 mg">
+                    <span class="tag-stock in">En stock</span>
+                    <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=300&q=80" alt="Doliprane">
+                    <h3>Doliprane 1000 mg</h3>
+                    <p class="product-category">Paracétamol</p>
+                    <div class="product-footer">
+                        <span class="price">2 500 FCFA</span>
+                        <button class="btn-add" onclick="addToCart('Doliprane 1000 mg', 2500)"><i class="fa-solid fa-cart-plus"></i> Ajouter</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-name="amoxicilline 1g">
+                    <span class="tag-stock in">En stock</span>
+                    <img src="https://images.unsplash.com/photo-1471864190281-a93a3070b6de?auto=format&fit=crop&w=300&q=80" alt="Amoxicilline">
+                    <h3>Amoxicilline 1g</h3>
+                    <p class="product-category">Antibiotique</p>
+                    <div class="product-footer">
+                        <span class="price">3 200 FCFA</span>
+                        <button class="btn-add" onclick="addToCart('Amoxicilline 1g', 3200)"><i class="fa-solid fa-cart-plus"></i> Ajouter</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-name="vitamine c 500 mg">
+                    <span class="tag-stock in">En stock</span>
+                    <img src="https://images.unsplash.com/photo-1550572017-edd951b55104?auto=format&fit=crop&w=300&q=80" alt="Vitamine C">
+                    <h3>Vitamine C 500 mg</h3>
+                    <p class="product-category">Complément alimentaire</p>
+                    <div class="product-footer">
+                        <span class="price">1 500 FCFA</span>
+                        <button class="btn-add" onclick="addToCart('Vitamine C 500 mg', 1500)"><i class="fa-solid fa-cart-plus"></i> Ajouter</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Traçabilité & Suivi de Commande Express -->
+        <section class="main-section" id="tracking-section" style="display: none;">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-truck-fast"></i> Suivi de votre commande en temps réel</h2>
+                <p>Traçabilité complète – Expédition express en cours.</p>
+            </div>
+
+            <div class="tracking-card">
+                <div class="tracking-info-header">
+                    <div>
+                        <span class="order-id">Commande #MPC12346</span>
+                        <span class="delivery-status-badge">En cours de route</span>
+                    </div>
+                    <div class="estimated-time">
+                        <i class="fa-regular fa-clock"></i> Arrivée estimée (Express) : <strong>10 - 15 min</strong>
+                    </div>
+                </div>
+
+                <!-- Étapes de progression -->
+                <div class="stepper-container">
+                    <div class="step completed">
+                        <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+                        <span>Validée</span>
+                    </div>
+                    <div class="step completed">
+                        <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+                        <span>Préparation</span>
+                    </div>
+                    <div class="step active">
+                        <div class="step-icon"><i class="fa-solid fa-person-biking"></i></div>
+                        <span>En route</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon"><i class="fa-solid fa-house-chimney"></i></div>
+                        <span>Livré</span>
+                    </div>
+                </div>
+
+                <div class="delivery-details-box">
+                    <p><i class="fa-solid fa-location-dot"></i> <strong>Lieu de livraison :</strong> Dakar, Sénégal</p>
+                    <p><i class="fa-solid fa-motorcycle"></i> <strong>Livreur :</strong> Coursier partenaire Sen Pharma Connect</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tiroir Panier & Paiement avec Logos Wave et Orange Money -->
+        <div id="cart-drawer" class="cart-drawer">
+            <div class="cart-header">
+                <h3><i class="fa-solid fa-cart-shopping"></i> Mon Panier</h3>
+                <span class="close-btn" onclick="toggleCart()">&times;</span>
+            </div>
+            <div class="cart-items" id="cart-items-container">
+                <p class="empty-cart-msg">Votre panier est vide.</p>
+            </div>
+            
+            <div class="cart-footer" id="cart-footer-section" style="display: none;">
+                <div class="cart-total">
+                    <span>Total :</span>
+                    <strong id="cart-total-price">0 FCFA</strong>
+                </div>
+
+                <!-- Options de paiement avec logos Wave et Orange Money -->
+                <div class="payment-options">
+                    <label class="pay-label">Choisissez votre mode de paiement :</label>
+                    <div class="payment-methods-grid">
+                        <label class="pay-card">
+                            <input type="radio" name="payment_method" value="Wave" checked>
+                            <span class="pay-logo wave-logo">WAVE</span>
+                        </label>
+                        <label class="pay-card">
+                            <input type="radio" name="payment_method" value="Orange Money">
+                            <span class="pay-logo om-logo">ORANGE MONEY</span>
+                        </label>
+                        <label class="pay-card full-width-pay">
+                            <input type="radio" name="payment_method" value="Paiement après livraison">
+                            <span><i class="fa-solid fa-hand-holding-dollar"></i> Payer après la livraison</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button class="btn-primary btn-block" onclick="checkout()">Confirmer la commande</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== INTERFACE VENDEUR / PHARMACIE ==================== -->
+    <div id="vendor-view" class="view-container" style="display: none;">
+        <div class="dashboard-header">
+            <h2><i class="fa-solid fa-store"></i> Espace Vendeur & Gestion d'Officine</h2>
+        </div>
+
+        <section class="vendor-section">
+            <div class="vendor-header">
+                <h2>Ajouter un nouveau produit au catalogue</h2>
+                <p>Enregistrez vos médicaments pour alimenter la plateforme en temps réel (Expédition express activée).</p>
+            </div>
+            
+            <form class="product-form" id="addProductForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nom du médicament / produit</label>
+                        <input type="text" placeholder="Ex: Efferalgan 500mg" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Catégorie</label>
+                        <select required>
+                            <option value="">Sélectionner...</option>
+                            <option value="medicaments">Médicaments</option>
+                            <option value="hygiene">Hygiène & Soins</option>
+                            <option value="vitamines">Santé & Vitamines</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Prix unitaire (FCFA)</label>
+                        <input type="number" placeholder="Ex: 2000" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantité en stock</label>
+                        <input type="number" placeholder="Ex: 50" required>
+                    </div>
+                </div>
+                <div class="form-group full-width">
+                    <label>Date limite de péremption</label>
+                    <input type="date" required>
+                </div>
+                <button type="submit" class="btn-primary btn-block"><i class="fa-solid fa-plus-circle"></i> Publier le produit</button>
+            </form>
+        </section>
+    </div>
+
+    <!-- ==================== MODAL DE CONNEXION / INSCRIPTION ==================== -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('auth-modal')">&times;</span>
+            <div class="modal-logo">
+                <span class="logo-sen">SEN</span><span class="logo-pharma">PHARMA</span>
+            </div>
+            <h2 id="modal-title">Connexion à votre espace</h2>
+            <p id="modal-subtitle">Choisissez votre profil pour accéder à votre interface dédiée.</p>
+
+            <div class="auth-tabs">
+                <button class="tab-btn active" onclick="switchAuthRole('client')">Client / Patient</button>
+                <button class="tab-btn" onclick="switchAuthRole('vendeur')">Vendeur / Pharmacie</button>
+            </div>
+
+            <form class="auth-form" onsubmit="handleAuthSubmit(event)">
+                <!-- Nom & Prénom pour le client -->
+                <div id="client-fields" class="role-fields">
+                    <div class="form-group">
+                        <label>Nom</label>
+                        <input type="text" id="input-nom" placeholder="Ex: Diallo">
+                    </div>
+                    <div class="form-group">
+                        <label>Prénom</label>
+                        <input type="text" id="input-prenom" placeholder="Ex: Aminata">
+                    </div>
+                </div>
+
+                <!-- Nom de la pharmacie pour le vendeur -->
+                <div id="vendeur-fields" class="role-fields" style="display: none;">
+                    <div class="form-group">
+                        <label>Nom de la pharmacie</label>
+                        <input type="text" id="input-pharmacie" placeholder="Ex: Pharmacie du Point E">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Adresse Email</label>
+                    <input type="email" id="input-email" placeholder="votre@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <input type="password" id="input-password" placeholder="••••••••" required>
+                </div>
+                
+                <div class="auth-options">
+                    <label><input type="checkbox"> Se souvenir de moi</label>
+                    <a href="#" id="toggle-mode-link" onclick="toggleRegisterMode(event)">Créer un nouveau compte</a>
+                </div>
+
+                <button type="submit" id="auth-submit-btn" class="btn-primary btn-block">Se connecter</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2026 SEN PHARMA CONNECT. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- ==================== SCRIPTS JAVASCRIPT ==================== -->
+    <script>
+        let currentUserRole = null;
+        let isRegisterMode = false;
+        let authRole = 'client';
+        let cart = [];
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('auth-modal');
+            if (event.target == modal) { modal.style.display = "none"; }
+        }
+
+        function switchAuthRole(role) {
+            authRole = role;
+            document.querySelectorAll('.tab-btn').forEach(t => t.classList.toggle('active'));
+            updateAuthModalUI();
+        }
+
+        function toggleRegisterMode(e) {
+            e.preventDefault();
+            isRegisterMode = !isRegisterMode;
+            updateAuthModalUI();
+        }
+
+        function updateAuthModalUI() {
+            const title = document.getElementById('modal-title');
+            const clientFields = document.getElementById('client-fields');
+            const vendeurFields = document.getElementById('vendeur-fields');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            const toggleLink = document.getElementById('toggle-mode-link');
+
+            if (isRegisterMode) {
+                title.textContent = authRole === 'client' ? "Créer un compte Client" : "Créer un compte Vendeur";
+                submitBtn.textContent = "S'inscrire";
+                toggleLink.textContent = "Déjà un compte ? Se connecter";
+                if (authRole === 'client') {
+                    clientFields.style.display = 'block';
+                    vendeurFields.style.display = 'none';
+                } else {
+                    clientFields.style.display = 'none';
+                    vendeurFields.style.display = 'block';
+                }
+            } else {
+                title.textContent = "Connexion à votre espace";
+                clientFields.style.display = 'none';
+                vendeurFields.style.display = 'none';
+                submitBtn.textContent = "Se connecter";
+                toggleLink.textContent = "Créer un nouveau compte";
+            }
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            currentUserRole = authRole;
+            
+            document.getElementById('public-view').style.display = 'none';
+            document.getElementById('auth-nav-btn').style.display = 'none';
+            document.getElementById('logout-btn').style.display = 'inline-flex';
+
+            const welcomeMsg = document.getElementById('user-welcome-msg');
+            if (currentUserRole === 'client') {
+                const prenom = document.getElementById('input-prenom').value || 'Client';
+                welcomeMsg.textContent = `Bienvenue, ${prenom}`;
+                document.getElementById('client-view').style.display = 'block';
+                document.getElementById('vendor-view').style.display = 'none';
+            } else {
+                const pharma = document.getElementById('input-pharmacie').value || 'Pharmacie Partenaire';
+                welcomeMsg.textContent = `Espace Officine : ${pharma}`;
+                document.getElementById('vendor-view').style.display = 'block';
+                document.getElementById('client-view').style.display = 'none';
+            }
+
+            closeModal('auth-modal');
+        }
+
+        function logout() {
+            currentUserRole = null;
+            document.getElementById('public-view').style.display = 'block';
+            document.getElementById('client-view').style.display = 'none';
+            document.getElementById('vendor-view').style.display = 'none';
+            document.getElementById('auth-nav-btn').style.display = 'inline-flex';
+            document.getElementById('logout-btn').style.display = 'none';
+            document.getElementById('user-welcome-msg').textContent = '';
+            document.getElementById('tracking-section').style.display = 'none';
+        }
+
+        // Recherche dynamique dans le catalogue client
+        function filterProducts() {
+            const query = document.getElementById('client-search-input').value.toLowerCase();
+            const cards = document.querySelectorAll('#products-grid-container .product-card');
+            
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name');
+                if (name.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function toggleCart() {
+            document.getElementById('cart-drawer').classList.toggle('open');
+        }
+
+        function addToCart(name, price) {
+            const item = cart.find(i => i.name === name);
+            if (item) { item.quantity++; } else { cart.push({ name, price, quantity: 1 }); }
+            updateCartUI();
+            document.getElementById('cart-drawer').classList.add('open');
+        }
+
+        function removeFromCart(name) {
+            cart = cart.filter(i => i.name !== name);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const badge = document.getElementById('cart-badge');
+            const totalPriceEl = document.getElementById('cart-total-price');
+            const footerSection = document.getElementById('cart-footer-section');
+
+            const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
+            badge.textContent = totalItems;
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="empty-cart-msg">Votre panier est vide.</p>';
+                footerSection.style.display = 'none';
+                return;
+            }
+
+            footerSection.style.display = 'block';
+            let html = '';
+            let total = 0;
+
+            cart.forEach(i => {
+                total += i.price * i.quantity;
+                html += `
+                    <div class="cart-item">
+                        <div>
+                            <h4>${i.name}</h4>
+                            <p>${i.price.toLocaleString()} FCFA x ${i.quantity}</p>
+                        </div>
+                        <button onclick="removeFromCart('${i.name}')" style="background:none; border:none; color:red; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            totalPriceEl.textContent = total.toLocaleString() + ' FCFA';
+        }
+
+        function checkout() {
+            const selectedMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            alert(`Commande validée avec succès !\nMode de règlement choisi : ${selectedMethod}\nExpédition express en cours (10-15 min).`);
+            cart = [];
+            updateCartUI();
+            toggleCart();
+            document.getElementById('tracking-section').style.display = 'block';
+            window.location.hash = '#tracking-section';
+        }
+
+        document.getElementById('addProductForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert("Produit ajouté avec succès au catalogue général (disponible pour l'expédition express) !");
+            this.reset();
+        });
+    </script>
+</body>
+</html>
