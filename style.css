@@ -130,3 +130,79 @@ body { background-color: var(--bg-body); color: var(--text-main); line-height: 1
 
 footer { background: var(--secondary); color: var(--white); padding: 20px; margin-top: 60px; text-align: center; }
 .footer-bottom { font-size: 12px; color: #94A3B8; }
+/* ========================================= */
+/* --- RESPONSIVE MOBILE (Écrans < 768px) --- */
+/* ========================================= */
+@media screen and (max-width: 768px) {
+    /* 1. Ajustement global des marges et conteneurs */
+    .nav-container, 
+    .dashboard-header, 
+    .search-section-client, 
+    .main-section, 
+    .vendor-section {
+        padding: 0 15px;
+        margin: 15px auto;
+    }
+
+    /* 2. Passage du Hero en colonne (texte puis image en dessous) */
+    .hero-section {
+        flex-direction: column;
+        padding: 30px 20px;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .hero-content {
+        max-width: 100%;
+    }
+
+    .hero-content h1 {
+        font-size: 26px;
+    }
+
+    .hero-image img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* 3. Adaptation de la grille des produits (1 produit par ligne ou s'adapte) */
+    .products-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    /* 4. Formulaire vendeur : passage en une seule colonne */
+    .product-form .form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .form-group.full-width {
+        grid-column: span 1;
+    }
+
+    /* 5. Panier latéral : prend toute la largeur sur mobile */
+    .cart-drawer {
+        width: 100%;
+        right: -100%;
+    }
+    .cart-drawer.open {
+        right: 0;
+    }
+
+    /* 6. Suivi de commande (Stepper) : empilement vertical si besoin */
+    .stepper-container {
+        flex-direction: column;
+        gap: 20px;
+        align-items: flex-start;
+        padding-left: 10px;
+    }
+    .stepper-container::before {
+        display: none; /* Cache la ligne horizontale sur mobile */
+    }
+    .step {
+        flex-direction: row;
+        gap: 15px;
+        align-items: center;
+    }
+}
